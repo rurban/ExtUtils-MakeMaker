@@ -3010,7 +3010,21 @@ PPD_OUT
 </SOFTPKG>
 PPD_XML
 
-    push @ppd_cmds, $self->echo($ppd_xml, $ppd_file, { append => 1 });
+    {
+      chomp $ppd_xml;
+      open my $fh, '>', 'EUMMppd' or die "Could not open EUMMmeta: $!\n";
+      printf $fh <<'EUMMPPD', $ppd_xml;
+use strict;
+use warnings;
+$|=1;
+print STDOUT <<'EOF';
+%s
+EOF
+EUMMPPD
+      close $fh or die "Could not write EUMMppd: $!\n";
+    }
+
+    push @ppd_cmds, '$(NOECHO) $(ABSPERL) EUMMppd >> ' . $ppd_file;
 
     return sprintf <<'PPD_OUT', join "\n\t", @ppd_cmds;
 # Creates a PPD (Perl Package Description) for a binary distribution.

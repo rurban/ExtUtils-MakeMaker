@@ -544,7 +544,7 @@ clean :: clean_subdirs
     }
 
     push(@files, qw[$(MAKE_APERL_FILE)
-                    MYMETA.json MYMETA.yml perlmain.c tmon.out mon.out so_locations
+                    EUMMmeta EUMMppd MYMETA.json MYMETA.yml perlmain.c tmon.out mon.out so_locations
                     blibdirs.ts pm_to_blib pm_to_blib.ts
                     *$(OBJ_EXT) *$(LIB_EXT) perl.exe perl perl$(EXE_EXT)
                     $(BOOTSTRAP) $(BASEEXT).bso
@@ -842,22 +842,39 @@ MAKE_FRAG
         $meta = bless \%metadata, 'CPAN::Meta';
     }
 
-    my @write_metayml = $self->echo(
-      $meta->as_string({version => "1.4"}), 'META_new.yml'
-    );
-    my @write_metajson = $self->echo(
-      $meta->as_string(), 'META_new.json'
-    );
+    {
+      my $metayml = $meta->as_string({version => "1.4"});
+      chomp $metayml;
+      my $metajsn = $meta->as_string();
+      chomp $metajsn;
+      open my $fh, '>', 'EUMMmeta' or die "Could not open EUMMmeta: $!\n";
+      printf $fh <<'EUMMMETA', 'META_new.yml', $metayml, 'META_new.json', $metajsn;
+use strict;
+use warnings;
+{
+  open my $fh, '>', '%s' or die "Error $!\n";
+  print $fh <<'METAYML';
+%s
+METAYML
+  close $fh
+}
+{
+  open my $fh, '>', '%s' or die "Error $!\n";
+  print $fh <<'METAJSON';
+%s
+METAJSON
+  close $fh
+}
+EUMMMETA
+      close $fh or die "Could not write EUMMmeta: $!\n";
+    }
 
-    my $metayml = join("\n\t", @write_metayml);
-    my $metajson = join("\n\t", @write_metajson);
-    return sprintf <<'MAKE_FRAG', $metayml, $metajson;
+    return sprintf <<'MAKE_FRAG';
 metafile : create_distdir
 	$(NOECHO) $(ECHO) Generating META.yml
-	%s
-	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
 	$(NOECHO) $(ECHO) Generating META.json
-	%s
+	$(NOECHO) $(ABSPERL) EUMMmeta
+	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
 	-$(NOECHO) $(MV) META_new.json $(DISTVNAME)/META.json
 MAKE_FRAG
 
