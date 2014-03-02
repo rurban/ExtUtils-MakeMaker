@@ -3011,8 +3011,9 @@ PPD_OUT
 PPD_XML
 
     {
+      mkdir '_eumm';
       chomp $ppd_xml;
-      open my $fh, '>', 'EUMMppd' or die "Could not open EUMMmeta: $!\n";
+      open my $fh, '>', '_eumm/genppd' or die "Could not open genppd: $!\n";
       printf $fh <<'EUMMPPD', $ppd_xml;
 use strict;
 use warnings;
@@ -3024,7 +3025,7 @@ EUMMPPD
       close $fh or die "Could not write EUMMppd: $!\n";
     }
 
-    push @ppd_cmds, '$(NOECHO) $(ABSPERL) EUMMppd >> ' . $ppd_file;
+    push @ppd_cmds, '$(NOECHO) $(ABSPERL) _eumm/genppd >> ' . $ppd_file;
 
     return sprintf <<'PPD_OUT', join "\n\t", @ppd_cmds;
 # Creates a PPD (Perl Package Description) for a binary distribution.

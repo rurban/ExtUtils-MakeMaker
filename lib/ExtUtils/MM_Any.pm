@@ -520,7 +520,7 @@ clean :: clean_subdirs
 ');
 
     my @files = sort values %{$self->{XS}}; # .c files from *.xs files
-    my @dirs  = qw(blib);
+    my @dirs  = qw(blib _eumm);
 
     # Normally these are all under blib but they might have been
     # redefined.
@@ -544,7 +544,7 @@ clean :: clean_subdirs
     }
 
     push(@files, qw[$(MAKE_APERL_FILE)
-                    EUMMmeta EUMMppd MYMETA.json MYMETA.yml perlmain.c tmon.out mon.out so_locations
+                    MYMETA.json MYMETA.yml perlmain.c tmon.out mon.out so_locations
                     blibdirs.ts pm_to_blib pm_to_blib.ts
                     *$(OBJ_EXT) *$(LIB_EXT) perl.exe perl perl$(EXE_EXT)
                     $(BOOTSTRAP) $(BASEEXT).bso
@@ -843,11 +843,12 @@ MAKE_FRAG
     }
 
     {
+      mkdir '_eumm';
       my $metayml = $meta->as_string({version => "1.4"});
       chomp $metayml;
       my $metajsn = $meta->as_string();
       chomp $metajsn;
-      open my $fh, '>', 'EUMMmeta' or die "Could not open EUMMmeta: $!\n";
+      open my $fh, '>', '_eumm/genmeta' or die "Could not open genmeta: $!\n";
       printf $fh <<'EUMMMETA', 'META_new.yml', $metayml, 'META_new.json', $metajsn;
 use strict;
 use warnings;
@@ -866,14 +867,14 @@ METAJSON
   close $fh
 }
 EUMMMETA
-      close $fh or die "Could not write EUMMmeta: $!\n";
+      close $fh or die "Could not write genmeta: $!\n";
     }
 
     return sprintf <<'MAKE_FRAG';
 metafile : create_distdir
 	$(NOECHO) $(ECHO) Generating META.yml
 	$(NOECHO) $(ECHO) Generating META.json
-	$(NOECHO) $(ABSPERL) EUMMmeta
+	$(NOECHO) $(ABSPERL) _eumm/genmeta
 	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
 	-$(NOECHO) $(MV) META_new.json $(DISTVNAME)/META.json
 MAKE_FRAG

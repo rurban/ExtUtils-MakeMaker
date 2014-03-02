@@ -48,7 +48,7 @@ note "Filename as version"; {
         qr{Can't parse version 'Recursive.pm'}
     );
     ok $res, 'we know how to deal with bogus versions defined in Makefile.PL';
-    my $content = do { open my $fh, '<', 'EUMMmeta' or die "$!\n"; local $/; <$fh>; };
+    my $content = do { open my $fh, '<', '_eumm/genmeta' or die "$!\n"; local $/; <$fh>; };
     like $content, $version_regex, $version_action;
 }
 
@@ -63,7 +63,7 @@ note "'undef' version from parse_version"; {
         qr{Can't parse version 'undef'}
     );
     ok $res, q|when there's no $VERSION in Module.pm, $self->{VERSION} = 'undef'; via MM_Unix::parse_version and we know how to deal with that|;
-    my $content = do { open my $fh, '<', 'EUMMmeta' or die "$!\n"; local $/; <$fh>; };
+    my $content = do { open my $fh, '<', '_eumm/genmeta' or die "$!\n"; local $/; <$fh>; };
     like $content, $version_regex, $version_action;
 }
 
@@ -80,7 +80,7 @@ note "x.y.z version"; {
         qr{Can't parse version '\x00\x00\x03'}
     );
     ok $res, q|we know how to deal with our $VERSION = 0.0.3; style versions defined in the module|;
-    my $content = do { open my $fh, '<', 'EUMMmeta' or die "$!\n"; local $/; <$fh>; };
+    my $content = do { open my $fh, '<', '_eumm/genmeta' or die "$!\n"; local $/; <$fh>; };
     like $content, $version_regex, $version_action;
 }
 
@@ -95,7 +95,7 @@ note ".5 version"; {
         qr{Can't parse version '.5'}
     );
     ok $res, q|we know how to deal with our $VERSION = '.5'; style versions defined in the module|;
-    my $content = do { open my $fh, '<', 'EUMMmeta' or die "$!\n"; local $/; <$fh>; };
+    my $content = do { open my $fh, '<', '_eumm/genmeta' or die "$!\n"; local $/; <$fh>; };
     like $content, $version_regex, $version_action;
 }
 
@@ -112,7 +112,7 @@ note "Non-camel case metadata"; {
     );
     my $res = eval { $mm->metafile_target };
     ok $res, q|we know how to deal with non-camel-cased custom meta resource keys defined in Makefile.PL|;
-    my $content = do { open my $fh, '<', 'EUMMmeta' or die "$!\n"; local $/; <$fh>; };
+    my $content = do { open my $fh, '<', '_eumm/genmeta' or die "$!\n"; local $/; <$fh>; };
     like $content, qr/x_Repositoryclone/, "they're camel-cased";
 }
 
@@ -131,6 +131,6 @@ note "version object in provides"; {
         },
     );
     my $res = eval { $mm->metafile_target };
-    my $content = do { open my $fh, '<', 'EUMMmeta' or die "$!\n"; local $/; <$fh>; };
+    my $content = do { open my $fh, '<', '_eumm/genmeta' or die "$!\n"; local $/; <$fh>; };
     like $content, qr{version: \s* v1.2.3}x;
 }
