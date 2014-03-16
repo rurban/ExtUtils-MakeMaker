@@ -1138,6 +1138,10 @@ sub flush {
 
     $self->_write_file_via_tmp($finalname, $self->{RESULT});
 
+    push @{$self->{RESULT_PM}}, "1;";
+
+    $self->_write_file_via_tmp("$finalname.pm", $self->{RESULT_PM});
+
     # Write MYMETA.yml to communicate metadata up to the CPAN clients
     print "Writing MYMETA.yml and MYMETA.json\n"
       if !$self->{NO_MYMETA} and $self->write_mymeta( $self->mymeta );
