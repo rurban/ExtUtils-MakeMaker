@@ -3,7 +3,7 @@ package ExtUtils::MM_VMS;
 use strict;
 
 use ExtUtils::MakeMaker::Config;
-require Exporter;
+use Exporter;
 
 BEGIN {
     # so we can compile the thing on non-VMS platforms.
@@ -15,12 +15,11 @@ BEGIN {
 
 use File::Basename;
 
-our $VERSION = '7.25_02';
+our $VERSION = '7.26';
 $VERSION = eval $VERSION;
 
-require ExtUtils::MM_Any;
-require ExtUtils::MM_Unix;
-our @ISA = qw( ExtUtils::MM_Unix ExtUtils::MM_Any );
+use ExtUtils::MM_Unix;
+our @ISA = qw( ExtUtils::MM_Unix );
 
 use ExtUtils::MakeMaker qw($Verbose neatvalue _sprintf562);
 our $Revision = $ExtUtils::MakeMaker::Revision;

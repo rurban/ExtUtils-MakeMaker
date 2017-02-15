@@ -2,12 +2,11 @@ package ExtUtils::MM_DOS;
 
 use strict;
 
-our $VERSION = '7.25_01';
+our $VERSION = '7.26';
 $VERSION = eval $VERSION;
 
-require ExtUtils::MM_Any;
-require ExtUtils::MM_Unix;
-our @ISA = qw( ExtUtils::MM_Any ExtUtils::MM_Unix );
+use ExtUtils::MM_Any;
+our @ISA = qw( ExtUtils::MM_Unix );
 
 
 =head1 NAME

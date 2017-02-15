@@ -24,10 +24,9 @@ use File::Basename;
 use File::Spec;
 use ExtUtils::MakeMaker qw(neatvalue _sprintf562);
 
-require ExtUtils::MM_Any;
-require ExtUtils::MM_Unix;
-our @ISA = qw( ExtUtils::MM_Unix ExtUtils::MM_Any );
-our $VERSION = '7.25_02';
+use ExtUtils::MM_Unix;
+our @ISA = qw( ExtUtils::MM_Unix );
+our $VERSION = '7.26';
 $VERSION = eval $VERSION;
 
 $ENV{EMXSHELL} = 'sh'; # to run `commands`

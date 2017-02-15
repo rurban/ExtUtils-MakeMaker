@@ -14,7 +14,7 @@ $VERSION = '7.26';
 $VERSION = eval $VERSION;  ## no critic [BuiltinFunctions::ProhibitStringyEval]
 
 use ExtUtils::MM_Any;
-our @ISA = qw(ExtUtils::MM_Any);
+our @ISA = qw( ExtUtils::MM_Any );
 
 
 =head1 NAME

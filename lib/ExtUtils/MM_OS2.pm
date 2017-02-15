@@ -5,12 +5,11 @@ use strict;
 use ExtUtils::MakeMaker qw(neatvalue);
 use File::Spec;
 
-our $VERSION = '7.25_01';
+our $VERSION = '7.26';
 $VERSION = eval $VERSION;
 
-require ExtUtils::MM_Any;
-require ExtUtils::MM_Unix;
-our @ISA = qw(ExtUtils::MM_Any ExtUtils::MM_Unix);
+use ExtUtils::MM_Unix;
+our @ISA = qw( ExtUtils::MM_Unix );
 
 =pod
 
