@@ -1192,8 +1192,7 @@ sub mv_all_methods {
 }
 
 sub skipcheck {
-    my($self) = shift;
-    my($section) = @_;
+    my($self,$section) = @_;
     return 'skipped' if $section eq 'metafile' && $UNDER_CORE;
     if ($section eq 'dynamic') {
         print "Warning (non-fatal): Target 'dynamic' depends on targets ",

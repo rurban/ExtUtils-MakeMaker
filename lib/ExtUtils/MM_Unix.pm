@@ -131,17 +131,16 @@ Add MM_Unix_VERSION.
 =cut
 
 sub init_platform {
-    my($self) = shift;
+    my($self) = @_;
 
     $self->{MM_Unix_VERSION} = $VERSION;
     $self->{PERL_MALLOC_DEF} = '-DPERL_EXTMALLOC_DEF -Dmalloc=Perl_malloc '.
                                '-Dfree=Perl_mfree -Drealloc=Perl_realloc '.
                                '-Dcalloc=Perl_calloc';
-
 }
 
 sub platform_constants {
-    my($self) = shift;
+    my($self) = @_;
     my $make_frag = '';
 
     foreach my $macro (qw(MM_Unix_VERSION PERL_MALLOC_DEF))

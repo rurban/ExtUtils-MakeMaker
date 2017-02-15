@@ -52,10 +52,10 @@ Converts a list into a string wrapped at approximately 80 columns.
 =cut
 
 sub wraplist {
-    my($self) = shift;
+    my($self, @words) = @_;
     my($line,$hlen) = ('',0);
 
-    foreach my $word (@_) {
+    foreach my $word (@words) {
       # Perl bug -- seems to occasionally insert extra elements when
       # traversing array (scalar(@array) doesn't show them, but
       # foreach(@array) does) (5.00307)
@@ -311,7 +311,7 @@ qualifier value error.
 =cut
 
 sub pasthru {
-    my($self) = shift;
+    my($self) = @_;
     my $pasthru = $self->SUPER::pasthru;
     $pasthru =~ s|(PASTHRU\s*=\s*)|$1/MACRO=(|;
     $pasthru =~ s|\n\z|)\n|m;
@@ -408,7 +408,7 @@ No separator between a directory path and a filename on VMS.
 =cut
 
 sub init_DIRFILESEP {
-    my($self) = shift;
+    my($self) = @_;
 
     $self->{DIRFILESEP} = '';
     return 1;
@@ -421,7 +421,7 @@ sub init_DIRFILESEP {
 =cut
 
 sub init_main {
-    my($self) = shift;
+    my($self) = @_;
 
     $self->SUPER::init_main;
 
@@ -524,7 +524,7 @@ $VERSION.
 =cut
 
 sub init_platform {
-    my($self) = shift;
+    my($self) = @_;
 
     $self->{MM_VMS_REVISION} = $Revision;
     $self->{MM_VMS_VERSION}  = $VERSION;
@@ -538,7 +538,7 @@ sub init_platform {
 =cut
 
 sub platform_constants {
-    my($self) = shift;
+    my($self) = @_;
     my $make_frag = '';
 
     foreach my $macro (qw(PERL_VMS MM_VMS_REVISION MM_VMS_VERSION))
@@ -1267,8 +1267,6 @@ Syntax for invoking shar, tar and zip differs from that for Unix.
 =cut
 
 sub zipfile_target {
-    my($self) = shift;
-
     return <<'MAKE_FRAG';
 $(DISTVNAME).zip : distdir
 	$(PREOP)
@@ -1279,8 +1277,6 @@ MAKE_FRAG
 }
 
 sub tarfile_target {
-    my($self) = shift;
-
     return <<'MAKE_FRAG';
 $(DISTVNAME).tar$(SUFFIX) : distdir
 	$(PREOP)
@@ -1293,8 +1289,6 @@ MAKE_FRAG
 }
 
 sub shdist_target {
-    my($self) = shift;
-
     return <<'MAKE_FRAG';
 shdist : distdir
 	$(PREOP)

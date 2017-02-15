@@ -47,7 +47,7 @@ libperl.a equivalent to be linked to dynamic extensions.
 =cut
 
 sub init_linker {
-    my($self) = shift;
+    my($self) = @_;
 
     $self->{PERL_ARCHIVE} ||=
       File::Spec->catdir('$(PERL_INC)',$Config{libperl});
