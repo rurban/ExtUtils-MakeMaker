@@ -3556,7 +3556,13 @@ sub get_version {
         local $^W = 0;
         $line = $1 if $line =~ m{^(.+)}s;
         eval($line); ## no critic
-        return ${$name};
+        my $result = ${$name};
+        if (!defined $result) {
+            $line =~ s/^.+VERSION\s*=//;
+            $line =~ s/;.*//;
+            $result = eval $line;
+        }
+        $result;
     }
 }
 

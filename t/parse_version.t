@@ -121,17 +121,17 @@ for my $code ( sort keys %versions ) {
     (my $label = $code) =~ s/\n/\\n/g;
     my $warnings = "";
     local $SIG{__WARN__} = sub { $warnings .= "@_\n"; };
-	if (defined $expect) {
-		is( parse_version_string($code), $expect, $label );
-	} else {
-		my $is_called = 0;
-		no warnings qw[redefine once];
-		local *MM::get_version = sub {
-			$is_called = 1;
-		};
-		ok !$is_called;
-		is( parse_version_string($code), 'undef', $label );
-	}
+    if (defined $expect) {
+        is( parse_version_string($code), $expect, $label );
+    } else {
+        my $is_called = 0;
+        no warnings qw[redefine once];
+        local *MM::get_version = sub {
+            $is_called = 1;
+        };
+        ok !$is_called;
+        is( parse_version_string($code), 'undef', $label );
+    }
     is($warnings, '', "$label does not cause warnings");
 }
 
