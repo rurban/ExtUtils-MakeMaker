@@ -382,9 +382,9 @@ sub replace_manpage_separator {
     $man;
 }
 
-=item init_DEST
+=item init_DEST (override)
 
-(override) Because of the difficulty concatenating VMS filepaths we
+Because of the difficulty concatenating VMS filepaths we
 must pre-expand the DEST* variables.
 
 =cut
@@ -402,7 +402,7 @@ sub init_DEST {
 }
 
 
-=item init_DIRFILESEP
+=item init_DIRFILESEP (override)
 
 No separator between a directory path and a filename on VMS.
 
