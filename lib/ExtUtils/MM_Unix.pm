@@ -14,7 +14,7 @@ use ExtUtils::MakeMaker qw($Verbose neatvalue _sprintf562);
 
 # If we make $VERSION an our variable parse_version() breaks
 use vars qw($VERSION);
-$VERSION = '7.35_06';
+$VERSION = '8.35_06';
 $VERSION =~ tr/_//d;
 
 require ExtUtils::MM_Any;
@@ -37,6 +37,7 @@ BEGIN {
                    grep( $^O eq $_, qw(bsdos interix dragonfly) )
                   );
     $Is{Android} = $^O =~ /android/;
+    $Is{Darwin}  = $^O eq 'darwin';
 }
 
 BEGIN {
@@ -993,6 +994,7 @@ sub xs_dynamic_lib_macros {
     my $armaybe = $self->_xs_armaybe($attribs);
     my $ld_opt = $Is{OS2} ? '$(OPTIMIZE) ' : ''; # Useful on other systems too?
     my $ld_fix = $Is{OS2} ? '|| ( $(RM_F) $@ && sh -c false )' : '';
+    $ld_fix = '&& dsymutil "$@"' if $Is{Darwin} and $Config{ccflags} =~ /-DDEBUGGING/;
     sprintf <<'EOF', $armaybe, $ld_opt.$otherldflags, $inst_dynamic_dep, $ld_fix;
 # This section creates the dynamically loadable objects from relevant
 # objects and possibly $(MYEXTLIB).

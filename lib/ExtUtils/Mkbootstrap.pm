@@ -3,8 +3,9 @@ package ExtUtils::Mkbootstrap;
 # There's just too much Dynaloader incest here to turn on strict vars.
 use strict 'refs';
 
-our $VERSION = '7.35_06';
+our $VERSION = '8.35_06c';
 $VERSION =~ tr/_//d;
+$VERSION =~ s/c$//;
 
 require Exporter;
 our @ISA = ('Exporter');
@@ -25,7 +26,7 @@ sub Mkbootstrap {
     # call dl_findfile(). We don't say `use' here because when
     # first building perl extensions the DynaLoader will not have
     # been built when MakeMaker gets first used.
-    require DynaLoader;
+    eval "require DynaLoader;";
 
     rename "$baseext.bs", "$baseext.bso"
       if -s "$baseext.bs";
@@ -41,10 +42,10 @@ sub Mkbootstrap {
 	shift @INC;
     }
 
-    if ($Config{'dlsrc'} =~ /^dl_dld/){
-	package DynaLoader;
-	push(@dl_resolve_using, dl_findfile('-lc'));
-    }
+    #if ($Config{'dlsrc'} =~ /^dl_dld/){
+    #	package DynaLoader;
+    #	push(@dl_resolve_using, dl_findfile('-lc'));
+    #}
 
     my(@all) = (@bsloadlibs, @DynaLoader::dl_resolve_using);
     my($method) = '';

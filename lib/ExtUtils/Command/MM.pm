@@ -108,7 +108,8 @@ sub pod2man {
         local $@;
         if( !eval { require Pod::Man } ) {
             warn "Pod::Man is not available: $@".
-                 "Man pages will not be generated during this install.\n";
+                 "Man pages will not be generated during this install.\n"
+                unless $ENV{PERL_CORE};
             return 0;
         }
     }
@@ -139,7 +140,8 @@ sub pod2man {
     delete $options{lax};
     my $count = scalar @ARGV / 2;
     my $plural = $count == 1 ? 'document' : 'documents';
-    print "Manifying $count pod $plural\n";
+    print "Manifying $count pod $plural\n"
+      unless defined $ENV{MAKEFLAGS} and $ENV{MAKEFLAGS} =~ /\b(s|silent|quiet)\b/;
 
     do {{  # so 'next' works
         my ($pod, $man) = splice(@ARGV, 0, 2);

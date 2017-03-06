@@ -1,7 +1,7 @@
 package ExtUtils::MM_Any;
 
 use strict;
-our $VERSION = '7.35_06';
+our $VERSION = '8.35_06';
 $VERSION =~ tr/_//d;
 
 use Carp;
@@ -1422,7 +1422,7 @@ sub _normalize_version {
   $version = 0 unless defined $version;
 
   if ( ref $version eq 'version' ) { # version objects
-    $version = $version->stringify;
+    $version = $version->is_qv ? $version->normal : $version->stringify;
   }
   elsif ( $version =~ /^[^v][^.]*\.[^.]+\./ ) { # no leading v, multiple dots
     # normalize string tuples without "v": "1.2.3" -> "v1.2.3"
@@ -1595,12 +1595,12 @@ sub distmeta_target {
       $self->oneliner(<<'CODE', ['-MExtUtils::Manifest=maniadd']),
 exit unless -e q{META.yml};
 eval { maniadd({q{META.yml} => q{Module YAML meta-data (added by MakeMaker)}}) }
-    or die "Could not add META.yml to MANIFEST: ${'@'}"
+    or print "Could not add META.yml to MANIFEST: $${'@'}\n"
 CODE
       $self->oneliner(<<'CODE', ['-MExtUtils::Manifest=maniadd'])
 exit unless -f q{META.json};
 eval { maniadd({q{META.json} => q{Module JSON meta-data (added by MakeMaker)}}) }
-    or die "Could not add META.json to MANIFEST: ${'@'}"
+    or print "Could not add META.json to MANIFEST: $${'@'}\n"
 CODE
     );
 
@@ -1817,7 +1817,7 @@ sub distsignature_target {
 
     my $add_sign = $self->oneliner(<<'CODE', ['-MExtUtils::Manifest=maniadd']);
 eval { maniadd({q{SIGNATURE} => q{Public-key signature (added by MakeMaker)}}) }
-    or die "Could not add SIGNATURE to MANIFEST: ${'@'}"
+    or print "Could not add SIGNATURE to MANIFEST: $${'@'}\n"
 CODE
 
     my $sign_dist        = $self->cd('$(DISTVNAME)' => 'cpansign -s');
