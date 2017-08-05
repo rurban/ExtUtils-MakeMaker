@@ -921,7 +921,6 @@ sub _xs_make_bs {
 # we use touch to prevent make continually trying to remake it.
 # The DynaLoader only reads a non-empty file.
 %1$s.bs : $(FIRST_MAKEFILE) $(BOOTDEP)
-	$(NOECHO) $(ECHO) "Running Mkbootstrap for %1$s ($(BSLOADLIBS))"
 	$(NOECHO) $(PERLRUN) \
 		"-MExtUtils::Mkbootstrap" \
 		-e "Mkbootstrap('%1$s','$(BSLOADLIBS)');"
@@ -2861,10 +2860,10 @@ parse a file and return what you think is the ABSTRACT
 
 sub parse_abstract {
     my($self,$parsefile) = @_;
-    my $result;
+    my($result, $fh);
 
     local $/ = "\n";
-    open(my $fh, '<', $parsefile) or die "Could not open '$parsefile': $!";
+    open($fh, '<', $parsefile) or die "Could not open '$parsefile': $!";
     binmode $fh;
     my $inpod = 0;
     my $pod_encoding;
@@ -2931,7 +2930,21 @@ sub parse_version {
 
     local $/ = "\n";
     local $_;
-    open(my $fh, '<', $parsefile) or die "Could not open '$parsefile': $!";
+    if (!ref $parsefile and !-e $parsefile and $Config::Config{usecperl}) {
+      no strict 'refs';
+      my ($prereq) = $parsefile =~ /\.c:(.*)$/;
+      my $normal;
+      $normal = ${$prereq."::VERSION"} if $prereq;
+      $result = $normal if defined $normal;
+      $result = "undef" unless defined $result;
+      return $result;
+    }
+    my $fh;
+    if (!ref $parsefile) { # IO::Scalar is already open
+      open($fh, '<', $parsefile) or die "Could not open '$parsefile': $!";
+    } else {
+      $fh = $parsefile;
+    }
     my $inpod = 0;
     while (<$fh>) {
         $inpod = /^=(?!cut)/ ? 1 : /^=cut/ ? 0 : $inpod;
@@ -2952,7 +2965,7 @@ sub parse_version {
     }
     close $fh;
 
-    if ( defined $result && $result !~ /^v?[\d_\.]+$/ ) {
+    if ( defined $result && $result !~ /^v?[\d_\.]+c?$/ ) {
       require version;
       my $normal = eval { version->new( $result ) };
       $result = $normal if defined $normal;
