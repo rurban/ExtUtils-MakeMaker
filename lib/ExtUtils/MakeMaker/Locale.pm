@@ -129,12 +129,15 @@ _init();
 Encode::Alias::define_alias(sub {
     no strict 'refs';
     no warnings 'once';
-    return ${"ENCODING_" . uc(shift)};
+    my $name = uc(shift);
+    $name =~ s/-/_/g;
+    return ${"ENCODING_" . $name};
 }, "locale");
 
 sub _flush_aliases {
     no strict 'refs';
     for my $a (sort keys %Encode::Alias::Alias) {
+	$a =~ s/-/_/g;
 	if (defined ${"ENCODING_" . uc($a)}) {
 	    delete $Encode::Alias::Alias{$a};
 	    warn "Flushed alias cache for $a" if DEBUG;
