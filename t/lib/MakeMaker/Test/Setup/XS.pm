@@ -136,11 +136,13 @@ my %Files = (
 
 my %label2files = (basic => \%Files);
 
-$label2files{bscode} = +{
-  %{ $label2files{'basic'} }, # make copy
-  'Test_BS' => $BS_TEST,
-  't/bs.t' => $T_BOOTSTRAP,
-};
+if (!$Config{usecperl}) {
+  $label2files{bscode} = +{
+    %{ $label2files{'basic'} }, # make copy
+      'Test_BS' => $BS_TEST,
+      't/bs.t' => $T_BOOTSTRAP,
+  };
+}
 delete $label2files{bscode}->{'t/is_even.t'};
 
 $label2files{static} = +{
@@ -299,11 +301,13 @@ $label2files{multi} = +{
 virtual_rename('multi', $typemap, "lib/XS/$typemap");
 virtual_rename('multi', 'Test.xs', 'lib/XS/Test.xs');
 
-$label2files{bscodemulti} = +{
-  %{ $label2files{'multi'} }, # make copy
-  'lib/XS/Test_BS' => $BS_TEST,
-  't/bs.t' => $T_BOOTSTRAP,
-};
+if (!$Config{usecperl}) {
+  $label2files{bscodemulti} = +{
+    %{ $label2files{'multi'} }, # make copy
+      'lib/XS/Test_BS' => $BS_TEST,
+      't/bs.t' => $T_BOOTSTRAP,
+  };
+}
 delete $label2files{bscodemulti}->{'t/is_even.t'};
 delete $label2files{bscodemulti}->{'t/is_odd.t'};
 
@@ -394,7 +398,7 @@ sub list_static {
 sub list_dynamic {
   (
     [ 'basic', '', '' ],
-    $^O ne 'MSWin32' ? (
+    (!$Config{usecperl} && $^O ne 'MSWin32') ? (
         [ 'bscode', '', '' ],
         [ 'bscodemulti', '', '' ],
         $^O !~ m!^(VMS|aix)$! ? ([ 'subdirscomplex', '', '' ]) : (),
