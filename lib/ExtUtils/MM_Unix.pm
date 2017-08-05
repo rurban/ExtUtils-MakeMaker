@@ -2625,9 +2625,11 @@ $(INST_ARCHAUTODIR)/extralibs.all : $(INST_ARCHAUTODIR)$(DFSEP).exists '.join(" 
 	push @m, "\tcat $catfile >> \$\@\n";
     }
 
-    my $ldfrom = $self->{XSMULTI} ? '' : '$(LDFROM)';
+    # without XSMULTI leads to duplicate objects: one direct and one via the MAP_STATIC
+    my $ldfrom = ''; # $self->{XSMULTI} ? '' : '$(LDFROM)';
     #                             1     2                        3        4
     push @m, _sprintf562 <<'EOF', $tmp, $ldfrom, $self->xs_obj_opt('$@'), $makefilename;
+
 $(MAP_TARGET) :: %1$s/perlmain$(OBJ_EXT) $(MAP_LIBPERLDEP) $(MAP_STATICDEP) $(INST_ARCHAUTODIR)/extralibs.all
 	$(MAP_LINKCMD) %2$s $(OPTIMIZE) %1$s/perlmain$(OBJ_EXT) %3$s $(MAP_STATIC) "$(LLIBPERL)" `cat $(INST_ARCHAUTODIR)/extralibs.all` $(MAP_PRELIBS)
 	$(NOECHO) $(ECHO) "To install the new '$(MAP_TARGET)' binary, call"
