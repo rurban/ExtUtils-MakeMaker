@@ -2394,7 +2394,10 @@ CODE
     $self->{FIRST_MAKEFILE}     ||= $self->{MAKEFILE} || 'Makefile';
     $self->{MAKEFILE}           ||= $self->{FIRST_MAKEFILE};
     $self->{MAKEFILE_OLD}       ||= $self->{MAKEFILE}.'.old';
-    $self->{MAKE_APERL_FILE}    ||= $self->{MAKEFILE}.'.aperl';
+    unless ($self->{MAKE_APERL_FILE}) {
+      $self->{MAKE_APERL_FILE}  = ($self->{MAKEFILE} =~ /\.aperl$/)
+        ? $self->{MAKEFILE} : $self->{MAKEFILE}.'.aperl';
+    }
 
     # Not everybody uses -f to indicate "use this Makefile instead"
     $self->{USEMAKEFILE}        ||= '-f';
